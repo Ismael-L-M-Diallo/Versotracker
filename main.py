@@ -1,35 +1,108 @@
 import requests as re
+import unittest
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+import undetected_chromedriver as uc
+import time
+from bs4 import BeautifulSoup
+
 
 url1 = "https://www.lacentrale.fr/listing?gearbox=MANUAL&makesModelsCommercialNames=TOYOTA%3A%3AVERSO&priceMax=3000&sortBy=priceAsc"
 url2 = "https://www.leboncoin.fr/recherche?category=2&text=toyota%20verso&price=min-3000&regdate=2010-max&gearbox=1&u_car_brand=TOYOTA&u_car_model=TOYOTA_Verso&sort=price&order=asc"
 url3 = "https://www.autolina.ch/fr/toyota/verso?price=-2000&sort=price_asc"
 url4 = "https://www.autoscout24.ch/fr/s/mo-verso/mk-toyota?priceTo=2000&sort%5B0%5D%5Btype%5D=PRICE&sort%5B0%5D%5Border%5D=ASC"
 url5 = "https://www.autolina.ch/fr/carList?price=-2000&sort=price_asc"
+url6= "https://www.lacentrale.fr/listing?gearbox=MANUAL&makesModelsCommercialNames=TOYOTA%3A%3AVERSO&priceMax=10000&sortBy=priceAsc"
 
 
-rep1 = re.get(url1)
+options = uc.ChromeOptions()
 
-print(rep1)
-
-html= rep1.content
-
-soup = bs(html, "lxml")
-
-print (soup)
+driver = uc.Chrome(
+    options=options,
+    browser_executable_path="/usr/bin/chromium",
+    version_main=154  # Aligne le driver sur la version 154 de ton Chromium
+)
 
 
-nm= soup.find_all("span", class_="ng-tns-c104-6")
+driver.get(url1)
 
-print(nm)
+time.sleep(5)
+
+html1=driver.page_source
+
+driver.close()
+
+
+soup = BeautifulSoup(html1, "lxml")
+
+print(soup)
+
+pp=soup.find_all("div", class_="Text_Text_text Text_Text_subtitle-large vehiclecardV2_vehiclePrice__En33S")
 
 lst=[]
 
-for n in nm:
-    ntxt=n.getText(strip=True)
-    lst.append(ntxt)
+for p in pp:
+    lst.append(p.get_text(strip=True))
 
-print(lst)
+print(lst[1:])
+
+
+lst2=[]
+
+
+tt0=soup.find_all("div", class_="vehiclecardV2_informationsContainer__wEUWL vehiclecardV2_informationsContainer__isRowFormat__NLhZT")
+
+for t in tt0:
+    lst2.append(t.get_text(strip=True, separator= " "))
+
+
+print(lst2[1:])
+
+lst3=[]
+
+
+tt2=soup.find_all("H2", class_="Text_Text_text Text_Text_subtitle-medium Text_Text_bold vehiclecardV2_title__vc1e9")
+
+for t in tt2:
+    lst3.append(t.get_text(strip=True, separator= " "))
+
+
+print(lst3[1:])
+
+options2 = uc.ChromeOptions()
+
+driver2 = uc.Chrome(
+    options=options2,
+    browser_executable_path="/usr/bin/chromium",
+    version_main=154  # Aligne le driver sur la version 154 de ton Chromium
+)
+
+
+driver2.get(url2)
+
+time.sleep(5)
+
+html2=driver2.page_source
+
+driver2.close()
+
+
+
+soup2=BeautifulSoup(html2, "lxml")
+
+
+
+pr2=soup2.find_all("p", class_="sr-only")
+
+lst3=[]
+
+for p in pr2:
+    x=p.get_text(strip=True)
+    y=x.replace("\u202f", "")
+    y=y.replace("\xa0", "")
+    lst3.append(y)
+
+print(lst3)
+
