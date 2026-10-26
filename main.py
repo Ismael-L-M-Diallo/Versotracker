@@ -7,7 +7,9 @@ from selenium.webdriver.common.by import By
 import undetected_chromedriver as uc
 import time
 from bs4 import BeautifulSoup
-
+import pandas as pd
+import os
+from dotenv import load_dotenv
 
 url1 = "https://www.lacentrale.fr/listing?gearbox=MANUAL&makesModelsCommercialNames=TOYOTA%3A%3AVERSO&priceMax=3000&sortBy=priceAsc"
 url2 = "https://www.leboncoin.fr/recherche?category=2&text=toyota%20verso&price=min-3000&regdate=2010-max&gearbox=1&u_car_brand=TOYOTA&u_car_model=TOYOTA_Verso&sort=price&order=asc"
@@ -37,7 +39,6 @@ driver.close()
 
 soup = BeautifulSoup(html1, "lxml")
 
-print(soup)
 
 pp=soup.find_all("div", class_="Text_Text_text Text_Text_subtitle-large vehiclecardV2_vehiclePrice__En33S")
 
@@ -105,4 +106,81 @@ for p in pr2:
     lst3.append(y)
 
 print(lst3)
+
+
+url3= "https://www.autolina.ch/fr/toyota/verso?sort=price_asc"
+
+rep=re.get(url3)
+
+print(rep)
+
+html3=rep.content
+
+soup3=BeautifulSoup(html3, "lxml")
+
+ct=soup3.find_all("div _ngcontent-serverapp-c75", class_="ng-tns-c75-17")
+
+lst4=[]
+
+for c in ct:
+    c.get_text(strip= True)
+    lst4.append
+
+print(lst4)
+
+
+options3= uc.ChromeOptions()
+
+driver3= uc.Chrome(
+    options= options3,
+    browser_executable_path="/usr/bin/chromium",
+    version_main=154
+)
+
+url4= "https://www.autoscout24.ch/fr/s/mo-verso/mk-toyota?sort%5B0%5D%5Btype%5D=PRICE&sort%5B0%5D%5Border%5D=ASC"
+
+driver3.get(url4)
+
+time.sleep(5)
+
+html4=driver3.page_source
+
+driver3.close()
+
+soup3=BeautifulSoup(html4, "lxml")
+
+
+pr=soup3.find_all("div", class_="css-1vv03rk")
+
+lst4=[]
+
+for p in pr:
+    p.get_text(strip= True)
+    lst4.append
+
+print(lst4)
+
+
+lstCentrale= list(zip(lst2[1:], lst[1:]))
+
+print(lstCentrale)
+
+df1=pd.DataFrame(lstCentrale, columns=["Characteristiques", "Prix"])
+
+print(df1)
+
+load_dotenv()
+
+TOKEN = os.getenv("TOKEN")
+if not TOKEN:
+    raise RuntimeError("token invalide")
+
+CHAT_ID = -1003698921393
+
+def envoyer_centrale(message):
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    payload = {"chat_id": CHAT_ID, "text": message }
+    requests.post(url, data=payload)
+
+FICHIER_PILE="bd_anti-doublons.txt"
 
