@@ -1,0 +1,14 @@
+# Environnement virtuel Python et variables d'environnement
+venv/
+env/
+.env/
+.venv/
+.env
+
+# Fichiers cache de Python
+__pycache__/
+*.py[cod]
+
+# IDEs 
+.vscodium
+
